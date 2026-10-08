@@ -1,22 +1,27 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"><meta name="referrer" content="no-referrer"><link rel="stylesheet" href="css/app.css"><link rel="icon" href="assets/icon.svg"><title>PaperShield — Privacy policy</title></head><body><main class="doc">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#0F6B6B"><link rel="stylesheet" href="css/app.css"><link rel="icon" href="assets/icon.svg"><title>PaperShield — Privacy policy</title></head><body><main class="doc" id="main">
 <a class="back-link" href="index.html">‹ Back to PaperShield</a>
+<div class="brand"><span data-logo="2.6rem"></span><span>PaperShield</span></div>
+
 <h1>Privacy policy</h1>
-<p><strong>Last updated:</strong> [DATE — fill in before publishing]. <strong>Contact:</strong> [YOUR EMAIL — fill in before publishing].</p>
+<p><strong>Last updated:</strong> October 8, 2026. <strong>Contact:</strong> open an issue at <a href="https://github.com/mai-hakim/papershield/issues" rel="noopener noreferrer">github.com/mai-hakim/papershield/issues</a>.</p>
 <h2>The short version</h2>
 <p>PaperShield reads your documents on your phone. It does not send your documents, photos or their text to us or to anyone else. There is no account and no login.</p>
 <h2>What happens to a photo</h2>
-<ol><li>You take a photo or choose a file.</li><li>The text reader runs inside your phone's browser.</li><li>Fixed rules decide the result.</li><li>The photo stays only in the phone's working memory while the result screen is open. When you close the result, the photo is wiped.</li></ol>
+<ol><li>You take a photo or choose a file.</li><li>The text reader runs inside your phone's browser.</li><li>Fixed rules decide the result.</li><li>The photo stays only in the phone's working memory while the result screen is open. When you close the result, the photo is wiped.</li><li>After each result you choose: <strong>Delete the letter</strong> (the default) or <strong>Save on my phone only</strong>.</li></ol>
 <h2>What PaperShield keeps on your phone</h2>
 <p>Stored only in your browser's local storage on this device:</p>
-<ul><li>Your settings and the first name you typed (optional).</li><li>Your trusted people: name, phone number, relationship and what they may receive.</li><li>Reminders: one date and one sentence, such as “Pay $45.50 by October 14”. The amount can appear in that sentence.</li><li>A monthly count: how many documents, how many needed help, how many needed a signature, how many looked like scams.</li></ul>
-<p><strong>Never stored:</strong> photos, document text, account numbers, Social Security numbers.</p>
+<ul><li>Your settings and the first name you typed (optional).</li><li>Your trusted people: name, phone number, relationship and what they may receive.</li><li>Reminders: one date and one sentence, such as “Pay $45.50 by October 14”. The amount can appear in that sentence.</li><li>A monthly count: how many documents, how many needed help, how many needed a signature, how many looked like scams.</li><li>Only if you press “Save on my phone only”: that letter's photo and its short summary, in this browser's storage (IndexedDB) on this phone. You can delete each saved letter at any time.</li></ul>
+<p><strong>Never stored</strong> unless you choose “Save on my phone only”: photos and document text. <strong>Never sent to us, ever:</strong> anything at all.</p>
 <h2>What leaves your phone</h2>
 <p>Nothing, unless you choose to send it. When you press “Send to someone I trust”, PaperShield shows you the exact message first. It then opens WhatsApp, Messages or another app you pick. That app sends it, under that app's own privacy policy. PaperShield offers to hide private numbers before sending.</p>
 <h2>Data we collect</h2>
-<p>None. PaperShield has no analytics, no advertising, no cookies and no tracking. The app is a set of files hosted at [HOSTING — e.g. GitHub Pages / Cloudflare Pages]. The hosting company may keep standard web server logs (such as IP address and time of visit) under its own policy.</p>
+<p>None. PaperShield has no analytics, no advertising, no cookies and no tracking. The app is a set of files hosted on GitHub Pages. The hosting company may keep standard web server logs (such as IP address and time of visit) under its own policy.</p>
 <h2>Deleting everything</h2>
-<p>Settings → “Delete everything on this phone”. Or clear this website's data in your browser.</p>
+<p>Settings → “Delete everything on this phone” (this also deletes saved letters). Or clear this website's data in your browser.</p>
 <h2>Children</h2><p>PaperShield is not designed for children under 13.</p>
 <h2>Not advice</h2><p>PaperShield gives information, not financial or legal advice. Check with someone you trust.</p>
-<p><em>Draft for review. Have a lawyer check this policy before you charge money or publish to an app store.</em></p>
-</main></body></html>
+<p><em>This policy has not been reviewed by a lawyer. Have it checked before charging money or publishing to an app store.</em></p>
+</main>
+<div id="live" class="sr" role="status" aria-live="polite"></div><div id="toast" role="status" hidden></div>
+<script src="js/i18n.js"></script><script src="js/i18n-extra.js"></script><script src="js/core.js"></script><script src="js/ui.js"></script><script src="js/static.js"></script>
+</body></html>

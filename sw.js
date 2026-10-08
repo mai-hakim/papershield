@@ -11,13 +11,14 @@ const SHELL = 'papershield-shell';   // small app files: refreshed in the backgr
 const HEAVY = 'papershield-heavy';   // big text-reader files: downloaded once, they rarely change
 
 const SHELL_FILES = [
-  './', 'index.html', 'welcome.html', 'privacy.html', 'accessibility.html', 'about.html',
+  './', 'index.html', 'welcome.html', 'privacy.html', 'accessibility.html', 'about.html', 'test.html',
   'manifest.webmanifest', 'css/app.css',
-  'js/i18n.js', 'js/rules.js', 'js/explain.js', 'js/demo.js', 'js/core.js', 'js/engine.js', 'js/app.js',
+  'js/i18n.js', 'js/i18n-extra.js', 'js/store.js', 'js/static.js', 'js/tests.js', 'js/ui.js', 'js/rules.js', 'js/explain.js', 'js/demo.js', 'js/core.js', 'js/engine.js', 'js/app.js',
   'vendor/tesseract/tesseract.min.js', 'vendor/pdfjs/pdf.min.js', 'vendor/jsqr/jsQR.js',
   'vendor/fonts/atkinson-hyperlegible-latin-400-normal.woff2',
   'vendor/fonts/atkinson-hyperlegible-latin-700-normal.woff2',
-  'assets/icon.svg', 'assets/icon-192.png', 'assets/icon-512.png', 'assets/architecture.svg'
+  'assets/icon.svg', 'assets/icon-192.png', 'assets/icon-512.png', 'assets/icon-512-maskable.png', 'assets/apple-touch-icon.png',
+  'assets/onboard-1.svg', 'assets/onboard-2.svg', 'assets/onboard-3.svg', 'assets/architecture.svg', 'assets/bg.svg', 'assets/bg-dark.svg'
 ];
 
 const HEAVY_FILES = [

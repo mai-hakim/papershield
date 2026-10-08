@@ -18,8 +18,9 @@
   function applySettings() {
     const s = S(); const b = document.body;
     I.setLang(s.lang);
-    b.dataset.profile = s.profile; b.dataset.theme = s.theme; b.classList.toggle('invert', !!s.invert); b.classList.toggle('one-hand', !!s.oneHand);
+    b.dataset.profile = s.profile; b.dataset.theme = s.theme; document.documentElement.classList.toggle('invert', !!s.invert); document.documentElement.classList.toggle('dim', (s.brightness || 100) !== 100); b.classList.toggle('one-hand', !!s.oneHand);
     document.documentElement.style.setProperty('--bright', (s.brightness || 100) / 100);
+    document.documentElement.style.setProperty('--scale', s.textScale || 1);
     document.title = t('appName');
   }
 
@@ -27,6 +28,7 @@
     C.stop(); main.innerHTML = ''; window.scrollTo(0, 0);
     render(main);
     const f = main.querySelector(focusSel || 'h1, h2'); if (f) { f.setAttribute('tabindex', '-1'); f.focus({ preventScroll: true }); }
+    window.PSUI.afterRender();
   }
   function bar(title, onBack) {
     return h('header', { class: 'bar' },
@@ -43,26 +45,39 @@
     go(root => {
       let step = 0;
       const box = h('section', { class: 'onboard' }); root.appendChild(box);
+      const dots = () => h('p', { class: 'ob-step' }, h('span', { class: 'ob-dots', 'aria-hidden': 'true' }, [0, 1, 2].map(i => h('span', { class: i === step ? 'on' : '' }))), t('obStep', { n: step + 1 }));
+      const pic = n => h('img', { class: 'ob-pic', src: 'assets/onboard-' + n + '.svg', alt: '', width: 320, height: 200 });
       const draw = () => {
         box.innerHTML = '';
         if (step === 0) {
-          box.append(h('div', { class: 'shield-mark', 'aria-hidden': 'true' }), h('h1', null, t('welcome')), h('p', { class: 'lead' }, t('welcomeBody')),
-            h('p', null, t('noAccount')),
-            h('label', { class: 'field' }, t('setLang'), langSelect(() => { applySettings(); draw(); })),
-            h('label', { class: 'field' }, t('setName'), h('input', { type: 'text', autocomplete: 'given-name', value: S().name, oninput: e => { S().name = e.target.value.trim(); C.save(); } })),
-            h('button', { class: 'btn primary big', onclick: () => { step = 1; draw(); } }, t('next')));
+          box.append(dots(), window.PSUI.logo('6.5rem', true), h('h1', null, t('ob1Title')), pic(1),
+            h('p', { class: 'lead' }, t('ob1Body')),
+            h('p', { class: 'trust-line' }, h('span', { 'aria-hidden': 'true' }, '🔒 '), t('trustLine')),
+            window.PSUI.sayBtn(() => [t('ob1Title'), t('ob1Body'), t('trustLine')]),
+            h('label', { class: 'field' }, '🌐 ' + t('setLang'), langSelect(() => { applySettings(); draw(); })),
+            h('label', { class: 'field' }, '🙂 ' + t('setName'), h('input', { type: 'text', autocomplete: 'given-name', value: S().name, oninput: e => { S().name = e.target.value.trim(); C.save(); } })),
+            h('button', { class: 'btn primary big', onclick: () => { step = 1; draw(); } }, t('next') + ' →'));
         } else if (step === 1) {
-          box.append(h('h1', null, t('setProfile')),
+          const rows = [['none', '✓'], ['action', '!'], ['help', '?'], ['scam', '⚠']];
+          box.append(dots(), h('h1', null, t('ob2Title')), pic(2), h('p', { class: 'lead' }, t('ob2Body')),
+            h('ul', { class: 'ob-outcomes' }, rows.map(([k, ic]) => h('li', { class: 'o-' + k }, h('span', { class: 'ob-lamp', 'aria-hidden': 'true' }, ic), t('ob2' + k)))),
+            h('p', { class: 'ob-tools' }, t('ob2Tools')),
+            window.PSUI.sayBtn(() => [t('ob2Title'), t('ob2Body'), ...rows.map(r => t('ob2' + r[0])), t('ob2Tools')]),
             yesNo(t('ask1'), v => { S().profile = v ? 'large' : 'standard'; C.save(); applySettings(); }),
             yesNo(t('ask2'), v => { if (!v) { S().alerts.flash = true; S().alerts.vibrate = true; if (S().profile === 'standard') S().profile = 'hearing'; } C.save(); applySettings(); }, 'speak'),
-            h('label', { class: 'field' }, t('ageOptional'), h('input', { type: 'number', inputmode: 'numeric', min: 18, max: 120, value: S().age,
-              oninput: e => { S().age = e.target.value; if (+S().age >= 80 && S().profile === 'standard') { S().profile = 'large'; applySettings(); } C.save(); } })),
-            profilePicker(),
-            h('button', { class: 'btn primary big', onclick: () => { step = 2; draw(); } }, t('next')));
+            window.PSUI.speedSlider(),
+            h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => { step = 0; draw(); } }, '← ' + t('back')),
+              h('button', { class: 'btn primary', onclick: () => { step = 2; draw(); } }, t('next') + ' →')));
         } else {
-          box.append(h('h1', null, t('trustedTitle')), h('p', null, t('trustedIntro')), trustedEditor(true),
-            h('button', { class: 'btn primary big', onclick: () => { S().onboarded = true; C.save(); home(); } }, t('start')));
+          const startNow = () => { S().onboarded = true; C.save(); home(); };
+          box.append(dots(), h('h1', null, t('ob3Title')), pic(3), h('p', { class: 'lead' }, t('ob3Body')),
+            window.PSUI.sayBtn(() => [t('ob3Title'), t('ob3Body')]),
+            trustedEditor(true),
+            h('button', { class: 'btn primary big', onclick: startNow }, '✓ ' + t('start')),
+            h('button', { class: 'btn ghost big', onclick: startNow }, t('skip')),
+            h('button', { class: 'link', onclick: () => { step = 1; draw(); } }, '← ' + t('back')));
         }
+        window.PSUI.afterRender();
         const f = box.querySelector('h1'); f.setAttribute('tabindex', '-1'); f.focus();
       };
       draw();
@@ -97,13 +112,14 @@
       const due = C.state.reminders.filter(r => !r.handled).sort((a, b) => a.date.localeCompare(b.date));
       root.append(
         h('header', { class: 'home-head' },
-          h('div', { class: 'brand' }, h('span', { class: 'shield-mark small', 'aria-hidden': 'true' }), h('span', null, t('appName'))),
+          h('div', { class: 'brand' }, window.PSUI.logo('2.4rem', !sessionStorage.getItem('ps-logo')), h('span', null, t('appName'))),
           h('button', { class: 'btn ghost', onclick: settings, 'aria-label': t('settings') }, '⚙ ' + t('settings'))),
         h('h1', { class: 'greet' }, greeting()),
         h('section', { class: 'today', 'aria-labelledby': 'today-h' },
           h('h2', { id: 'today-h' }, t('today')),
           due.length ? h('ul', { class: 'today-list' }, due.slice(0, 4).map(todayItem)) : h('p', { class: 'muted' }, t('todayEmpty')),
           st.docs ? h('p', { class: 'encourage' }, t('encourage', { n: st.docs, h: st.help })) : null),
+        savedSection(),
         h('button', { class: 'panic', onclick: panic }, h('span', { 'aria-hidden': 'true' }, '☎ '), t('phonePanic')),
         h('section', { class: 'demo-row', 'aria-label': t('tryDemo') }, h('h2', { class: 'small-h' }, t('tryDemo')),
           h('div', { class: 'chips' }, window.PSDemo.build().map(d => h('button', { class: 'chip', onclick: () => runDemo(d) }, t(d.titleKey))))),
@@ -113,11 +129,44 @@
           h('button', { class: 'camera-btn', onclick: camera, 'aria-describedby': 'cam-sub' },
             h('span', { class: 'cam-lens', 'aria-hidden': 'true' }), h('span', { class: 'cam-label' }, t('scan')), h('span', { id: 'cam-sub', class: 'cam-sub' }, t('scanSub'))),
           h('div', { class: 'dock-row' },
-            h('label', { class: 'btn ghost file' }, '⬆ ' + t('upload'), h('input', { type: 'file', accept: 'image/*,application/pdf', multiple: true, class: 'sr', onchange: e => fromFiles([...e.target.files]) })),
-            h('button', { class: 'btn ghost', onclick: () => C.speak([...main.querySelectorAll('h1,h2,p,button')].map(x => x.textContent).slice(0, 12)) }, '🔊 ' + t('readAloud'))))
+            h('label', { class: 'btn ghost file' }, '⬆ ' + t('upload'), h('input', { type: 'file', accept: 'image/*,application/pdf', multiple: true, class: 'sr', onchange: e => fromFiles([...e.target.files]) }))))
       );
+      try { sessionStorage.setItem('ps-logo', '1'); } catch (e) { /* private mode */ }
       // REM-02: overdue/near reminders get an alert on open
       if (due.some(r => R.dayDiff(new Date(), new Date(r.date)) <= 1)) C.alertUser('due');
+    });
+  }
+  // Letters the person chose to "Save on my phone only"
+  function savedSection() {
+    const sec = h('section', { class: 'saved card', hidden: true, 'aria-labelledby': 'saved-h' });
+    if (!window.PSStore) return sec;
+    const del = async r => { if (await C.confirmBox(t('keepDelete') + '?', '🗑️ ' + t('savedDelete'))) { await window.PSStore.remove(r.id); C.toast(t('savedGone')); home(); } };
+    window.PSStore.list().then(list => {
+      if (!list.length) return;
+      sec.hidden = false;
+      sec.append(h('h2', { id: 'saved-h' }, '📁 ' + t('savedTitle')), h('p', { class: 'muted center' }, '🔒 ' + t('savedNeverSent')),
+        h('ul', { class: 'saved-list' }, list.map(r => h('li', { class: 'saved-item o-' + r.outcome },
+          h('span', { class: 'saved-dot', 'aria-hidden': 'true' }, ICON[r.outcome] || '✉'),
+          h('div', null, h('strong', null, r.headline), h('p', { class: 'muted' }, t('savedOn', { date: I.fmtDate(new Date(r.id)) }))),
+          h('div', { class: 'saved-btns' },
+            h('button', { class: 'btn small', onclick: () => openSaved(r) }, '📄 ' + t('savedOpen')),
+            h('button', { class: 'btn small ghost', onclick: () => del(r) }, '🗑️ ' + t('savedDelete')))))));
+      window.PSUI.afterRender();
+    }).catch(() => {});
+    return sec;
+  }
+  function openSaved(r) {
+    go(root => {
+      root.append(bar(t('letterTitle'), home),
+        h('div', { class: 'outcome o-' + r.outcome }, window.PSUI.signal(r.outcome), h('span', { class: 'o-word' }, h('span', { class: 'o-icon', 'aria-hidden': 'true' }, ICON[r.outcome]), t('out_' + r.outcome))),
+        h('h2', { class: 'headline' }, r.headline),
+        h('section', { class: 'summary card' }, h('h3', null, '🧾 ' + t('sumTitle')), h('dl', { class: 'sum-list' }, r.rows.map(x => [h('dt', null, h('span', { 'aria-hidden': 'true' }, x[0] + ' '), x[1]), h('dd', null, x[2])]).flat()),
+          window.PSUI.sayBtn(() => [r.headline].concat(r.rows.map(x => x[1] + ': ' + x[2])), t('sumListen'))),
+        h('p', { class: 'muted center' }, t('seeLetterHint')),
+        h('div', { class: 'see-row' }, h('button', { class: 'btn', onclick: () => window.PSUI.openLens() }, '🔍 ' + t('magnifierBtn'))),
+        h('div', { class: 'letter-pages' }, (r.images || []).map((src, i) => h('img', { class: 'letter-img', src, alt: t('letterTitle') + ' ' + (i + 1) }))),
+        h('p', { class: 'privacy-note center' }, '🔒 ' + t('keepLine')),
+        h('button', { class: 'btn big', onclick: async () => { if (await C.confirmBox(t('keepDelete') + '?', '🗑️ ' + t('savedDelete'))) { await window.PSStore.remove(r.id); C.toast(t('savedGone')); home(); } } }, '🗑️ ' + t('keepDelete')));
     });
   }
   function todayItem(r) {
@@ -140,7 +189,7 @@
         h('p', { class: 'huge' }, t('phonePanicTitle')), h('p', { class: 'lead' }, t('phonePanicBody')),
         h('button', { class: 'btn primary big', onclick: home }, t('hangUpDone')),
         first ? h('a', { class: 'btn big', href: 'tel:' + first.phone }, '☎ ' + t('callTrusted') + ' (' + first.name + ')') : h('p', { class: 'muted' }, t('tNone'))));
-      C.speak([t('phonePanicTitle'), t('phonePanicBody')], { tone: 'serious' }); C.alertUser('scam');
+      C.speak([t('phonePanicTitle'), t('phonePanicBody')], { tone: 'serious', auto: true }); C.alertUser('scam');
     });
   }
 
@@ -283,7 +332,7 @@
         h('section', { class: 'card' }, h('h2', null, t('h_cantRead')),
           h('ul', { class: 'fix-list' }, [fixKey, 'fixDark', 'fixBlur', 'fixPart'].filter((v, i, s) => s.indexOf(v) === i).map(k => h('li', null, t(k))))),
         h('div', { class: 'stack' }, h('button', { class: 'btn primary big', onclick: () => camera() }, t('tryAgain'))), disclaimer());
-      C.speak([t('out_cantRead'), t(fixKey)]);
+      C.speak([t('out_cantRead'), t(fixKey)], { auto: true });
     });
     void a;
   }
@@ -295,10 +344,10 @@
   }
 
   // ---------- result screen ----------
-  function outcomeCard(o, a) {
+  function outcomeCard(o, a) { // traffic-light signal + the answer in words (never colour alone)
     return h('div', { class: 'outcome o-' + o, role: 'alert' },
-      h('span', { class: 'o-icon', 'aria-hidden': 'true' }, ICON[o]),
-      h('span', { class: 'o-word' }, t('out_' + o)),
+      window.PSUI.signal(o),
+      h('span', { class: 'o-word' }, h('span', { class: 'o-icon', 'aria-hidden': 'true' }, ICON[o]), t('out_' + o)),
       a ? h('span', { class: 'o-band band-' + a.band }, h('span', { 'aria-hidden': 'true' }, ICON[a.band] + ' '), E.bandText(a)) : null);
   }
   function disclaimer() { return h('p', { class: 'disclaimer', role: 'note' }, t('disclaimer')); }
@@ -312,6 +361,7 @@
     if (!sample && !again) C.count(o, a.signature);
     const shown = a.decision.notSure && o !== 'scam' ? 'notSure' : o;
     if (o === 'scam' && !again) C.alertUser('scam');
+    else if (!again) window.PSUI.vibrate(shown);
 
     go(root => {
       const head = E.headline(a);
@@ -326,31 +376,98 @@
         o === 'scam' ? h('p', { class: 'scam-count' }, E.scamCountLine(a)) : null,
         a.decision.notSure ? h('p', { class: 'notsure' }, t('notSureBody')) : null,
         E.verifyLine(a) ? h('p', { class: 'verify' }, E.verifyLine(a)) : null,
+        (o === 'help' || shown === 'notSure') ? h('button', { class: 'btn big help-send', onclick: () => shareFlow(a) }, h('span', { 'aria-hidden': 'true' }, '📤 '), t('share')) : null,
+        summaryCard(a),
+        h('div', { class: 'see-row' }, h('button', { class: 'btn big', onclick: () => letterView() }, h('span', { 'aria-hidden': 'true' }, '📄 '), t('seeLetter'))),
         playback(a),
         typeConfirm(a),
         a.deadline && a.band !== 'unclear' ? timeline(a) : null,
-        h('p', { class: 'ignore' }, h('strong', null, '? '), E.ignoreLine(a)),
+        h('p', { class: 'ignore' }, h('span', { 'aria-hidden': 'true' }, '❓ '), E.ignoreLine(a)),
         (o === 'scam' || o === 'help') ? dontCard() : null,
-        h('section', { class: 'steps-card' }, h('h3', null, t('steps')), h('ol', null, steps.map(s => h('li', null, s)))),
+        h('section', { class: 'steps-card' }, h('h3', null, '👣 ' + t('steps')), h('ol', null, steps.map(s => h('li', null, s))), window.PSUI.sayBtn(() => [t('steps')].concat(steps))),
         fourQuestions(a),
         whyCard(a, reasons),
-        o === 'scam' ? h('section', { class: 'teach' }, h('h3', null, t('teach')), h('p', null, E.teachLine(a))) : null,
+        o === 'scam' ? h('section', { class: 'teach' }, h('h3', null, '🎓 ' + t('teach')), h('p', null, E.teachLine(a)), window.PSUI.sayBtn(() => [E.teachLine(a)])) : null,
         notReadCard(a),
         belongsCard(a),
         groundedCard(a),
         understandCard(a),
         actions(a),
-        originalCard(a),
+        keepCard(a),
         privacyNote(sample),
         disclaimer() // DEC-16
       );
-      C.speak([t('out_' + shown), opening, head], { tone: o === 'scam' ? 'serious' : 'calm' });
+      C.speak([t('out_' + shown), opening, head], { tone: o === 'scam' ? 'serious' : 'calm', auto: true });
     });
+  }
+
+  // "Letter summary": who, what, money, date, signature, what to do. Built on the phone from the rules output, no AI.
+  function summaryRows(a) {
+    const o = a.decision.outcome; const sd = a.sender || {};
+    const nm = sd.name ? R.maskText(sd.name, a.sensitive) : '';
+    const from = o === 'scam' && nm ? t('senderClaims', { x: nm }) : sd.sure ? nm : nm ? t('senderUnsure') + ' ' + t('senderMaybe', { x: nm }) : t('senderUnsure');
+    return [
+      ['🏢', t('sum_from'), from],
+      ['📄', t('sum_type'), o === 'scam' ? t('out_scam') : t('type_' + a.docType)],
+      ['💲', t('sum_money'), E.money(a)],
+      ['📅', t('sum_date'), a.band === 'nodate' ? t('sumNoDate') : a.deadline && a.band !== 'unclear' ? t('sumDate', { band: E.bandText(a), date: I.fmtDate(a.deadline) }) : E.bandText(a)],
+      ['✍️', t('sum_sign'), a.signature ? t('sumSignYes') : t('sumSignNo')],
+      ['✅', t('sum_do'), E.headline(a)]
+    ];
+  }
+  function summaryCard(a) {
+    const rows = summaryRows(a);
+    return h('section', { class: 'summary card', 'aria-labelledby': 'sum-h' }, h('h3', { id: 'sum-h' }, '🧾 ' + t('sumTitle')),
+      h('dl', { class: 'sum-list' }, rows.map(x => [h('dt', null, h('span', { 'aria-hidden': 'true' }, x[0] + ' '), x[1]), h('dd', null, x[2])]).flat()),
+      window.PSUI.sayBtn(() => rows.map(x => x[1] + ': ' + x[2]), t('sumListen')));
+  }
+
+  // "See the letter": the whole photo, big. The magnifier at the top works on it.
+  function letterView() {
+    const c = current; if (!c) return home();
+    const cv = c.canvases || [];
+    if (!cv.length || !cv[0].width || cv[0].width < 5) { C.toast(t('noPhoto')); return; }
+    go(root => {
+      root.append(bar(t('letterTitle'), () => showResult(c.a, c.canvases, c.sample)),
+        h('p', { class: 'muted center' }, t('seeLetterHint')),
+        h('div', { class: 'see-row' }, h('button', { class: 'btn', onclick: () => window.PSUI.openLens() }, '🔍 ' + t('magnifierBtn'))),
+        h('div', { class: 'letter-pages' }, cv.map((src, i) => {
+          const v = h('canvas', { class: 'letter-canvas', role: 'img', 'aria-label': t('letterTitle') + ' ' + (i + 1) + ': ' + R.maskText((c.a.lines || []).filter(l => (l.page || 0) === i).map(l => l.text).join(' '), c.a.sensitive).slice(0, 400) });
+          v.width = src.width; v.height = src.height; v.getContext('2d').drawImage(src, 0, 0); return v;
+        })),
+        h('button', { class: 'btn primary big', onclick: () => showResult(c.a, c.canvases, c.sample) }, '← ' + t('back')));
+    });
+  }
+
+  // After each result: delete (default) or keep on this phone only.
+  function keepCard(a) {
+    const box = h('section', { class: 'keep card', 'aria-labelledby': 'keep-h' });
+    box.append(h('h3', { id: 'keep-h' }, '🗂️ ' + t('keepTitle')),
+      h('div', { class: 'stack' },
+        h('button', { class: 'btn primary big', onclick: () => closeResult() }, h('span', { 'aria-hidden': 'true' }, '🗑️ '), t('keepDelete')),
+        h('button', { class: 'btn big', onclick: () => saveLetter() }, h('span', { 'aria-hidden': 'true' }, '📱 '), t('keepSave'))),
+      h('p', { class: 'muted center' }, t('keepDefault')));
+    async function saveLetter() {
+      const c = current; if (!c || !window.PSStore) return;
+      const shown = a.decision.notSure && a.decision.outcome !== 'scam' ? 'notSure' : a.decision.outcome;
+      const images = (c.canvases || []).filter(x => x && x.width > 5).slice(0, 5).map(x => {
+        const k = Math.min(1, 1400 / x.width); const d = document.createElement('canvas'); d.width = Math.round(x.width * k); d.height = Math.round(x.height * k);
+        d.getContext('2d').drawImage(x, 0, 0, d.width, d.height); return d.toDataURL('image/jpeg', 0.75);
+      });
+      try {
+        await window.PSStore.save({ id: Date.now(), outcome: shown === 'notSure' ? 'help' : shown, headline: E.headline(a), rows: summaryRows(a), images, sample: !!c.sample });
+        c.saved = true;
+        box.innerHTML = ''; box.append(h('h3', null, '✅ ' + t('keepSave')), h('p', { class: 'keep-ok' }, h('span', { 'aria-hidden': 'true' }, '🔒 '), t('keepLine')),
+          h('button', { class: 'btn primary big', onclick: () => { current = null; home(); } }, '🏠 ' + t('done')));
+        C.announce(t('keepLine')); C.speak([t('keepLine')]);
+      } catch (e) { C.toast(t('noPhoto')); }
+    }
+    return box;
   }
 
   function closeResult() {
     if (current) {
-      const wasReal = !current.sample; G.wipe(current.canvases); current = null;
+      const wasReal = !current.sample && !current.saved; if (!current.saved) G.wipe(current.canvases); current = null;
       home(); if (wasReal) C.toast(t('deleted')); // PRV-03
     } else home();
   }
@@ -370,13 +487,13 @@
         h('button', { class: 'btn primary', onclick: () => C.speak(all, { chunks: true, tone, onAsk: cont => { ask.hidden = false; ask.innerHTML = '';
           ask.append(h('span', null, t('readRest')), h('button', { class: 'btn small', onclick: () => { ask.hidden = true; cont(); } }, t('yes')), h('button', { class: 'btn small ghost', onclick: () => { ask.hidden = true; } }, t('no'))); } }) }, '▶ ' + t('play')),
         pp,
-        h('button', { class: 'btn', onclick: () => C.stop() }, '■ ' + t('stop')),
-        h('button', { class: 'btn', onclick: () => { const s = S(); const order = ['fast', 'normal', 'slow', 'vslow']; const i = order.indexOf(s.speed); s.speed = order[Math.min(order.length - 1, i + 1)]; C.save(); C.toast(t('speed_' + s.speed)); C.speak([E.headline(a)], { tone }); } }, '🐢 ' + t('slower'))),
+        h('button', { class: 'btn', onclick: () => C.stop() }, '■ ' + t('stop'))),
       ask,
+      window.PSUI.speedSlider(),
       h('div', { class: 'row wrap' },
-        h('button', { class: 'btn small ghost', onclick: () => C.speak([E.money(a)], { tone }) }, t('rep_amount')),
-        h('button', { class: 'btn small ghost', onclick: () => C.speak([E.bandText(a) + (a.deadline ? ', ' + I.fmtDate(a.deadline) : '')], { tone }) }, t('rep_deadline')),
-        h('button', { class: 'btn small ghost', onclick: () => C.speak([E.headline(a), ...E.steps(a)], { tone }) }, t('rep_do'))));
+        h('button', { class: 'btn small ghost', onclick: () => C.speak([E.money(a)], { tone }) }, '💲 ' + t('rep_amount')),
+        h('button', { class: 'btn small ghost', onclick: () => C.speak([E.bandText(a) + (a.deadline ? ', ' + I.fmtDate(a.deadline) : '')], { tone }) }, '📅 ' + t('rep_deadline')),
+        h('button', { class: 'btn small ghost', onclick: () => C.speak([E.headline(a), ...E.steps(a)], { tone }) }, '✅ ' + t('rep_do'))));
   }
 
   function typeConfirm(a) { // DEC-17 / DEC-18
@@ -403,22 +520,27 @@
   }
 
   function dontCard() { // RES-23, DEC-07
-    return h('section', { class: 'dont' }, h('h3', null, t('dontTitle')), h('ul', null, ['dont1', 'dont2', 'dont3', 'dont4', 'dont5'].map(k => h('li', null, '✕ ' + t(k)))));
+    const ks = ['dont1', 'dont2', 'dont3', 'dont4', 'dont5'];
+    return h('section', { class: 'dont' }, h('h3', null, '🚫 ' + t('dontTitle')), h('ul', null, ks.map(k => h('li', null, '✕ ' + t(k)))), window.PSUI.sayBtn(() => [t('dontTitle')].concat(ks.map(k => t(k)))));
   }
 
   function fourQuestions(a) { // RES-01 / RES-02 fixed order
-    const sender = a.senderLine ? R.maskText(a.senderLine, a.sensitive) : t('unknownSender');
+    const sd = a.sender || {}; const o = a.decision.outcome; const nm = sd.name ? R.maskText(sd.name, a.sensitive) : '';
+    const sender = o === 'scam' && nm ? t('senderClaims', { x: nm }) : sd.sure ? nm : t('senderUnsure');
     const signBtn = a.signature ? h('button', { class: 'btn small', onclick: () => evidence('signature') }, t('a_signFound')) : h('p', null, t('a_noSign'));
     return h('section', { class: 'four' },
-      details(t('q_who'), h('div', null, h('p', null, sender), E.verifyLine(a) ? h('p', { class: 'muted' }, E.verifyLine(a)) : null), true),
-      details(t('q_do'), h('p', null, E.headline(a)), true),
-      details(t('q_much'), h('div', null, h('p', null, E.money(a)), a.mainAmount ? h('button', { class: 'btn small ghost', onclick: () => evidence('amount') }, t('showEvidence')) : null), true),
-      details(t('q_sign'), signBtn, true));
+      details('🏢 ' + t('q_who'), h('div', null, h('p', null, sender), !sd.sure && nm ? h('p', { class: 'muted' }, t('senderMaybe', { x: nm })) : null,
+        E.verifyLine(a) ? h('p', { class: 'muted' }, E.verifyLine(a)) : null,
+        !sd.sure ? h('button', { class: 'btn small ghost', onclick: () => evidence('sender') }, '🔍 ' + t('senderShow')) : null), true),
+      details('✅ ' + t('q_do'), h('p', null, E.headline(a)), true),
+      details('💲 ' + t('q_much'), h('div', null, h('p', null, E.money(a)), a.mainAmount ? h('button', { class: 'btn small ghost', onclick: () => evidence('amount') }, '🔍 ' + t('showEvidence')) : null), true),
+      details('✍️ ' + t('q_sign'), signBtn, true),
+      h('div', { class: 'four-say' }, window.PSUI.sayBtn(() => [t('q_who'), sender, t('q_do'), E.headline(a), t('q_much'), E.money(a), t('q_sign'), a.signature ? t('a_signFound') : t('a_noSign')])));
   }
 
   function whyCard(a, reasons) { // EVD-03, EVD-04, EVD-05
     const chips = a.decision.checks.filter(c => c.found).map(c => h('button', { class: 'chip ev', onclick: () => evidence(c.id === 'money' ? 'amount' : c.id === 'deadline' ? 'deadline' : c.id === 'signature' ? 'signature' : 'risk') }, t('c_' + c.id)));
-    return h('section', { class: 'why' }, h('h3', null, t('whyTitle')), h('ul', null, reasons.map(r => h('li', null, r))),
+    return h('section', { class: 'why' }, h('h3', null, '🔎 ' + t('whyTitle')), h('ul', null, reasons.map(r => h('li', null, r))), window.PSUI.sayBtn(() => [t('whyTitle')].concat(reasons)),
       chips.length ? h('div', { class: 'chips' }, chips) : null,
       details(t('whyNot'), h('ul', { class: 'checks' }, a.decision.checks.map(c => h('li', { class: c.found ? 'found' : 'ok' }, (c.found ? '● ' : '○ ') + t('c_' + c.id) + ': ' + t(c.found ? 'found' : 'notFound')))), false),
       h('button', { class: 'btn', onclick: () => evidence() }, '🔍 ' + t('showEvidence')));
@@ -426,7 +548,7 @@
 
   function notReadCard(a) { // RES-09, RES-10, RES-11
     const f = E.fields(a); const unsure = f.filter(x => x.conf === 'review' || x.conf === 'cantTell');
-    return h('section', { class: 'notread' }, h('h3', null, t('notRead')),
+    return h('section', { class: 'notread' }, h('h3', null, '👀 ' + t('notRead')),
       unsure.length ? null : h('p', null, t('allRead')),
       h('dl', { class: 'conf' }, f.map(x => [h('dt', null, x.label), h('dd', { class: 'c-' + x.conf }, x.text)]).flat()));
   }
@@ -439,50 +561,62 @@
   function groundedCard(a) { // RES-28
     const ans = h('p', { class: 'answer', 'aria-live': 'polite' });
     const ask = k => { ans.textContent = E.grounded(a, k); C.speak([ans.textContent]); };
-    return h('section', { class: 'grounded' }, h('h3', null, t('grounded')),
-      h('div', { class: 'grid2' }, [['important', 'g_important'], ['money', 'g_money'], ['scam', 'g_scam'], ['do', 'g_do']].map(([k, l]) => h('button', { class: 'btn big', onclick: () => ask(k) }, t(l)))), ans);
+    const em = { important: '❗', money: '💲', scam: '🛑', do: '✅' };
+    return h('section', { class: 'grounded' }, h('h3', null, '💬 ' + t('grounded')),
+      h('div', { class: 'grid2' }, [['important', 'g_important'], ['money', 'g_money'], ['scam', 'g_scam'], ['do', 'g_do']].map(([k, l]) => h('button', { class: 'btn big', onclick: () => ask(k) }, h('span', { 'aria-hidden': 'true' }, em[k] + ' '), t(l)))), ans);
   }
 
-  function understandCard(a) { // RES-13..15
-    const out = h('div', { class: 'level-out', 'aria-live': 'polite' }); const lv = E.levels(a);
+  // "I don't understand": every press tries a different way.
+  // 1 simpler words + emoji, 2 read slowly, 3 show the line on the letter, 4 ask someone + send button.
+  function understandCard(a) {
+    const out = h('div', { class: 'level-out', 'aria-live': 'polite' });
+    const o = a.decision.outcome; const shown = a.decision.notSure && o !== 'scam' ? 'notSure' : o;
+    const simple = () => [t('simple_' + shown)].concat(o === 'scam' ? [] : E.steps(a).slice(0, 2).map(x => t('simpleStep', { x })));
+    const mainEv = () => a.evidence.find(e => e.kind === 'risk') || a.evidence.find(e => e.kind === 'deadline') || a.evidence.find(e => e.kind === 'amount') || a.evidence.find(e => e.kind === 'signature') || a.evidence.find(e => e.kind === 'sender');
+    const label = n => h('p', { class: 'level-label' }, h('span', { class: 'level-n', 'aria-hidden': 'true' }, String(n)), t('lvl' + n));
     const btn = h('button', { class: 'btn big', onclick: () => {
-      current.level = Math.min(4, current.level + 1); const L = lv[current.level - 1];
-      out.innerHTML = ''; out.append(h('p', { class: 'level-label' }, L.label), h('p', { class: 'level-text' }, L.text));
-      if (L.showEvidence) { out.appendChild(h('button', { class: 'btn small', onclick: () => evidence(null, true) }, t('showEvidence'))); }
-      if (L.callTrusted) out.appendChild(trustedButtons(a));
-      C.speak([L.text]);
+      current.level = current.level >= 4 ? 1 : current.level + 1; const n = current.level;
+      out.innerHTML = '';
+      if (n === 1) {
+        const lines = simple();
+        out.append(label(1), h('ul', { class: 'simple' }, lines.map(x => h('li', null, x))));
+        C.speak(lines);
+      } else if (n === 2) {
+        const lines = [E.headline(a)].concat(E.steps(a));
+        out.append(label(2), h('p', { class: 'level-text' }, '🐢 ' + E.headline(a)), h('button', { class: 'btn small', onclick: () => C.speak(lines, { rate: 0.5 }) }, '🔁 ' + t('replay')));
+        C.speak(lines, { rate: 0.5 });
+      } else if (n === 3) {
+        const ev = mainEv(); out.append(label(3));
+        const cv = current.canvases && current.canvases[(ev && ev.page) || 0];
+        if (ev && ev.bbox && cv && cv.width > 5) {
+          const b = ev.bbox, padY = 14, padX = 10;
+          const sx = Math.max(0, b.x0 - padX), sy = Math.max(0, b.y0 - padY), sw = Math.min(cv.width - sx, (b.x1 - b.x0) + padX * 2), sh = Math.min(cv.height - sy, (b.y1 - b.y0) + padY * 2);
+          const crop = h('canvas', { class: 'line-crop', role: 'img', 'aria-label': R.maskText(ev.text, a.sensitive) }); crop.width = Math.round(sw); crop.height = Math.round(sh);
+          const x = crop.getContext('2d'); x.drawImage(cv, sx, sy, sw, sh, 0, 0, crop.width, crop.height);
+          x.lineWidth = 4; x.strokeStyle = '#1A5FD0'; x.strokeRect(2, 2, crop.width - 4, crop.height - 4);
+          out.append(h('p', null, t('hereItSays')), crop, h('p', { class: 'level-text' }, '“' + R.maskText(ev.text, a.sensitive) + '”'),
+            h('button', { class: 'btn small', onclick: () => evidence(null, true) }, '🔍 ' + t('showEvidence')));
+          C.speak([t('hereItSays'), R.maskText(ev.text, a.sensitive)]);
+        } else {
+          out.append(h('p', { class: 'level-text' }, E.headline(a)), h('button', { class: 'btn small', onclick: () => evidence(null, true) }, '🔍 ' + t('showEvidence')));
+          C.speak([E.headline(a)]);
+        }
+      } else {
+        out.append(label(4), h('p', { class: 'level-text' }, '🤝 ' + t('open_help')),
+          h('button', { class: 'btn big help-send', onclick: () => shareFlow(a) }, h('span', { 'aria-hidden': 'true' }, '📤 '), t('share')), trustedButtons(a),
+          h('p', { class: 'muted' }, t('understandLast')));
+        C.speak([t('open_help')]);
+      }
+      if (n < 4) out.append(h('p', { class: 'muted' }, t('understandNext')));
     } }, '🤔 ' + t('dontUnderstand'));
     return h('section', { class: 'understand' }, btn, out);
-  }
-
-  function originalCard(a) { // RES-19, RES-20, RES-21
-    const gl = I.glossary[I.getLang()] || I.glossary.en; const words = Object.keys(gl).concat(Object.keys(I.glossary.en)).filter((v, i, s) => s.indexOf(v) === i);
-    const masked = R.maskText(a.text, a.sensitive);
-    const orig = h('div', { class: 'orig-text' });
-    const def = h('p', { class: 'definition', 'aria-live': 'polite' });
-    masked.split('\n').slice(0, 60).forEach(line => {
-      const p = h('p'); let rest = line;
-      while (rest) {
-        let hit = null, at = Infinity;
-        words.forEach(w => { const i = rest.toLowerCase().indexOf(w); if (i >= 0 && i < at) { at = i; hit = w; } });
-        if (!hit) { p.append(rest); break; }
-        p.append(rest.slice(0, at));
-        const word = rest.slice(at, at + hit.length); const meaning = (I.glossary[I.getLang()] || {})[hit] || I.glossary.en[hit];
-        p.append(h('button', { class: 'gloss', onclick: () => { def.textContent = word + ': ' + meaning; C.speak([def.textContent]); } }, word));
-        rest = rest.slice(at + hit.length);
-      }
-      orig.appendChild(p);
-    });
-    return details(t('original') + ' / ' + t('easyRead'), h('div', { class: 'side' },
-      h('div', null, h('h4', null, t('easyRead')), h('ul', { class: 'easy' }, E.easyRead(a).map(x => h('li', null, x)))),
-      h('div', null, h('h4', null, t('original')), h('p', { class: 'muted' }, t('tapWord')), def, orig)), false);
   }
 
   // ---------- actions ----------
   function actions(a) {
     const o = a.decision.outcome;
     return h('section', { class: 'actions' },
-      h('button', { class: 'btn primary big', onclick: () => shareFlow(a) }, '📤 ' + t('share')),
+      h('button', { class: 'btn primary big' + (o === 'help' ? ' help-send' : ''), onclick: () => shareFlow(a) }, '📤 ' + t('share')),
       trustedButtons(a),
       a.deadline && a.band !== 'overdue' && a.band !== 'unclear' && o !== 'scam' ? reminderBox(a) : null,
       h('div', { class: 'row wrap' },
@@ -568,11 +702,14 @@
     };
     const confirm = () => {
       const msg = E.summary(a, { name: who ? who.name : '', mask, level: what === 'alert' ? 'alert' : 'full' });
-      step(h('h2', null, t('confirmSend', { name: who ? who.name : '…' })), h('pre', { class: 'preview' }, msg),
+      step(h('h2', null, t('confirmSend', { name: who ? who.name : '…' })), h('p', null, t('sendTrustedReady')), h('pre', { class: 'preview' }, msg),
         h('div', { class: 'stack' },
           who ? h('a', { class: 'btn primary big', target: '_blank', rel: 'noopener noreferrer', href: 'https://wa.me/' + who.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg), onclick: () => done() }, t('viaWhatsApp')) : null,
           who ? h('a', { class: 'btn big', href: 'sms:' + who.phone.replace(/[^\d+]/g, '') + '?&body=' + encodeURIComponent(msg), onclick: () => done() }, t('viaSms')) : null,
-          h('button', { class: 'btn big', onclick: () => nativeShare(msg) }, t('viaShare')),
+          !who ? h('p', null, t('sendNoPerson')) : null,
+          !who ? h('a', { class: 'btn primary big', href: 'sms:?&body=' + encodeURIComponent(msg), onclick: () => done() }, '💬 ' + t('viaSms')) : null,
+          !who ? h('a', { class: 'btn big', target: '_blank', rel: 'noopener noreferrer', href: 'https://wa.me/?text=' + encodeURIComponent(msg), onclick: () => done() }, '🟢 ' + t('viaWhatsApp')) : null,
+          h('button', { class: 'btn big', onclick: () => nativeShare(msg) }, '📤 ' + t('viaShare')),
           h('p', { class: 'muted' }, t('replyHint'))));
     };
     const done = () => { C.toast(t('sent')); setTimeout(close, 400); };
@@ -597,8 +734,8 @@
     const a = current.a; const cv = current.canvases;
     let evs = a.evidence.filter(e => !kind || e.kind === kind); if (!evs.length) evs = a.evidence;
     if (!cv || !cv.length || !cv[0].width || cv[0].width < 5) { C.toast(t('deleted')); return; }
-    const colors = { deadline: '#1f6fff', amount: '#0a8a5a', signature: '#7b3fc4', risk: '#c4281c', sender: '#8a6d00' };
-    let page = (evs[0] && evs[0].page) || 0, dim = false;
+    const colors = { deadline: '#1A5FD0', amount: '#1C6E40', signature: '#6A3FA0', risk: '#B42318', sender: '#7A5A00' };
+    let page = (evs[0] && evs[0].page) || 0;
     const view = h('canvas', { class: 'ev-canvas', role: 'img', 'aria-label': evs.map(e => e.text).join('. ') });
     const lens = h('canvas', { class: 'lens', width: 260, height: 120, hidden: true, 'aria-hidden': 'true' });
     const list = h('ul', { class: 'ev-list' });
@@ -607,10 +744,6 @@
       view.width = Math.round(src.width * sc); view.height = Math.round(src.height * sc); view._sc = sc;
       const x = view.getContext('2d'); x.drawImage(src, 0, 0, view.width, view.height);
       const mine = a.evidence.filter(e => (e.page || 0) === page && e.bbox);
-      if (dim) { // EVD-07
-        x.fillStyle = 'rgba(0,0,0,0.6)'; x.fillRect(0, 0, view.width, view.height);
-        mine.forEach(e => { const b = e.bbox; x.drawImage(src, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0, b.x0 * sc, b.y0 * sc, (b.x1 - b.x0) * sc, (b.y1 - b.y0) * sc); });
-      }
       mine.forEach(e => { const b = e.bbox; x.lineWidth = 4; x.strokeStyle = colors[e.kind] || '#333'; x.strokeRect(b.x0 * sc, b.y0 * sc, (b.x1 - b.x0) * sc, (b.y1 - b.y0) * sc); });
     };
     go(root => {
@@ -620,7 +753,6 @@
         h('span', { class: 'ev-dot', style: 'background:' + (colors[e.kind] || '#333') }), R.maskText(e.text, a.sensitive)))));
       root.append(bar(t('showEvidence'), () => showBack()),
         h('p', { class: 'lead' }, h('strong', null, E.headline(a))),
-        h('div', { class: 'row wrap' }, h('button', { class: 'btn', onclick: () => { dim = !dim; draw(); } }, '◐ ' + t('showMatters'))),
         pager, h('div', { class: 'ev-wrap' }, view, lens), list);
       draw();
       // RES-33 / RES-34 magnifier that reads the line under the finger
@@ -633,7 +765,7 @@
           lx.fillStyle = '#fff'; lx.fillRect(0, 0, 260, 120); lx.drawImage(cv[page], px - 65, py - 30, 130, 60, 0, 0, 260, 120);
           if (S().readUnder) {
             const li = a.lines.findIndex(l => (l.page || 0) === page && l.bbox && py >= l.bbox.y0 && py <= l.bbox.y1);
-            if (li >= 0 && li !== lastLine) { lastLine = li; C.speak([R.maskText(a.lines[li].text, a.sensitive)]); }
+            if (li >= 0 && li !== lastLine) { lastLine = li; C.speak([R.maskText(a.lines[li].text, a.sensitive)], { auto: true }); }
           }
         });
         view.addEventListener('pointerup', () => { lens.hidden = true; });
@@ -644,7 +776,7 @@
     function focusLine(e, silent) { // EVD-02 / EVD-08
       if ((e.page || 0) !== page) { page = e.page || 0; draw(); }
       if (e.bbox) { const y = e.bbox.y0 * view._sc; view.parentElement.scrollTo({ top: Math.max(0, y - 80), behavior: 'smooth' }); view.scrollIntoView({ block: 'nearest' }); }
-      if (!silent) C.speak([I.getLang() === 'es' ? 'Aquí dice: ' : 'Here it says: ', R.maskText(e.text, a.sensitive)]);
+      if (!silent) C.speak([t('hereItSays'), R.maskText(e.text, a.sensitive)]);
     }
     function showBack() { const c = current; showResult(c.a, c.canvases, c.sample); }
   }
@@ -666,7 +798,7 @@
           h('label', { class: 'field' }, t('brightness'), h('input', { type: 'range', min: 70, max: 120, value: s.brightness, oninput: e => { s.brightness = +e.target.value; C.save(); applySettings(); } })),
           chk('oneHand', 'oneHand'), chk('magnifier', 'magnifier'), chk('readUnder', 'readUnder')),
         h('section', { class: 'card' },
-          sel('speed', [['vslow', t('speed_vslow')], ['slow', t('speed_slow')], ['normal', t('speed_normal')], ['fast', t('speed_fast')]], 'setSpeed'),
+          window.PSUI.speedSlider(),
           voices.length ? sel('voice', [['', '—']].concat(voices.map(v => [v.name, v.name])), 'setVoice') : null,
           chk('toneMatch', 'toneMatch'),
           h('button', { class: 'btn', onclick: () => C.speak([t('tagline')]) }, '🔊 ' + t('play')),
@@ -677,7 +809,7 @@
           h('button', { class: 'btn', onclick: () => { const m = familyText(); if (navigator.share) navigator.share({ text: m }).catch(() => {}); else navigator.clipboard.writeText(m).then(() => C.toast(t('sent'))); } }, '📤 ' + t('share'))),
         h('section', { class: 'card' }, h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: true, disabled: true }), ' ' + t('noImprove')), h('p', { class: 'muted' }, t('noImproveNote')),
           h('button', { class: 'link', onclick: privacyScreen }, t('privacy'))),
-        h('section', { class: 'card danger' }, h('button', { class: 'btn danger', onclick: async () => { if (await C.confirmBox(t('resetConfirm'), t('resetAll'))) { C.reset(); applySettings(); onboarding(); } } }, t('resetAll'))));
+        h('section', { class: 'card danger' }, h('button', { class: 'btn danger', onclick: async () => { if (await C.confirmBox(t('resetConfirm'), t('resetAll'))) { C.reset(); if (window.PSStore) await window.PSStore.clear().catch(() => {}); applySettings(); onboarding(); } } }, t('resetAll'))));
     });
   }
   function familyText() { const st = C.monthStats(); return t('reportText', { n: st.docs, s: st.sign, c: st.scam }); }
@@ -734,7 +866,7 @@
   }
   function privacyScreen() { // PRV-01, PRV-02, PRV-05, PRV-09
     go(root => root.append(bar(t('privacy'), home), h('section', { class: 'card' },
-      h('p', { class: 'lead' }, t('neverSent')), h('h2', null, t('keptTitle')), h('ul', null, ['kept1', 'kept2', 'kept3', 'kept4'].map(k => h('li', null, t(k)))),
+      h('p', { class: 'lead' }, t('neverSent')), h('h2', null, t('keptTitle')), h('ul', null, ['kept1', 'kept2', 'kept3', 'kept4', 'kept5'].map(k => h('li', null, t(k)))),
       h('p', null, t('notKept')), h('p', null, t('noAccount')), h('p', null, t('noImproveNote')),
       h('p', { class: 'muted' }, I.getLang() === 'es' ? 'La foto existe solo en la memoria mientras la pantalla de resultado está abierta. Al cerrarla, se borra.' : 'The photo exists only in memory while the result screen is open. When you close it, it is wiped.'),
       h('a', { class: 'btn', href: 'privacy.html' }, I.getLang() === 'es' ? 'Política de privacidad completa' : 'Full privacy policy'))));
@@ -744,6 +876,7 @@
 
   // ---------- boot ----------
   applySettings();
+  window.PSUI.initTools();
   if (window.speechSynthesis) speechSynthesis.onvoiceschanged = () => {};
   if (S().onboarded) home(); else onboarding();
   if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

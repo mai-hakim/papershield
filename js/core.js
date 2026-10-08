@@ -5,7 +5,7 @@
   const DEFAULTS = {
     settings: {
       name: '', lang: (navigator.language || 'en').slice(0, 2) === 'es' ? 'es' : 'en', profile: 'standard',
-      speed: 'slow', theme: 'system', invert: false, brightness: 100, toneMatch: true,
+      speed: 'slow', speedStep: 1, muted: false, theme: 'system', invert: false, brightness: 100, toneMatch: true,
       alerts: { sound: true, vibrate: true, flash: false }, oneHand: true, magnifier: true, readUnder: true,
       age: '', onboarded: false, voice: ''
     },
@@ -13,7 +13,14 @@
   };
   let state = load();
   function load() {
-    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) return deepMerge(JSON.parse(JSON.stringify(DEFAULTS)), s); } catch (e) { /* storage blocked */ }
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY));
+      if (s) {
+        // old speed names -> the 5-step slider (turtle .. rabbit)
+        if (s.settings && s.settings.speedStep == null && s.settings.speed) s.settings.speedStep = { vslow: 0, slow: 1, normal: 3, fast: 4 }[s.settings.speed] ?? 1;
+        return deepMerge(JSON.parse(JSON.stringify(DEFAULTS)), s);
+      }
+    } catch (e) { /* storage blocked */ }
     return JSON.parse(JSON.stringify(DEFAULTS));
   }
   function deepMerge(a, b) { Object.keys(b || {}).forEach(k => { if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k]) a[k] = deepMerge(a[k], b[k]); else a[k] = b[k]; }); return a; }
@@ -30,7 +37,9 @@
 
   // ---------- speech ----------
   const synth = root.speechSynthesis;
-  const RATES = { vslow: 0.55, slow: 0.75, normal: 0.95, fast: 1.15 };
+  // 5 steps, turtle to rabbit. Default is step 1 (0.62): slower than the old default (0.75).
+  const STEPS = [0.5, 0.62, 0.75, 0.9, 1.1];
+  const rateNow = () => STEPS[Math.max(0, Math.min(4, state.settings.speedStep ?? 1))];
   let queue = [], idx = 0, chunkMode = false, onAsk = null, toneNow = 'calm', paused = false;
   function pickVoice() {
     if (!synth) return null; const lang = root.PSi18n.getLang() === 'es' ? 'es' : 'en';
@@ -40,12 +49,18 @@
   function utter(text, tone) {
     const u = new SpeechSynthesisUtterance(text);
     const v = pickVoice(); if (v) u.voice = v; u.lang = root.PSi18n.getLang() === 'es' ? 'es-US' : 'en-US';
-    let rate = RATES[state.settings.speed] || 0.75, pitch = 1;
+    let rate = rateNow(), pitch = 1;
     if (state.settings.toneMatch) { if (tone === 'serious') { pitch = 0.85; rate *= 0.95; } else if (tone === 'calm') pitch = 1.05; }
+    if (rateOnce) rate = rateOnce;
     u.rate = rate; u.pitch = pitch; return u;
   }
+  // opts.auto: spoken without a tap (result opens, alerts). The mute icon stops these, never a tap.
+  // opts.rate: one-off speed (e.g. "read slowly").
+  let rateOnce = null;
   function speak(parts, opts) {
     if (!synth) return false; opts = opts || {};
+    if (opts.auto && state.settings.muted) return false;
+    rateOnce = opts.rate || null;
     stop(); queue = [].concat(parts).filter(Boolean); idx = 0; chunkMode = !!opts.chunks; onAsk = opts.onAsk || null; toneNow = opts.tone || 'calm';
     playNext(); return true;
   }
@@ -116,6 +131,6 @@
 
   root.PSCore = {
     get state() { return state; }, save, reset, count, monthStats,
-    speak, pause, resume, stop, isPaused, speechOK: !!synth, alertUser, h, announce, toast, confirmBox, onSpeechEnd: null
+    speak, pause, resume, stop, isPaused, SPEED_STEPS: STEPS, speechOK: !!synth, alertUser, h, announce, toast, confirmBox, onSpeechEnd: null
   };
 })(window);

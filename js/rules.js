@@ -205,6 +205,39 @@
     return n;
   }
 
+
+  // "Who sent this?": look at the top of the letter for a company or office name.
+  // Skips labels like "SAMPLE ONLY -", dates, greetings, phone numbers, page numbers and the reader's own name.
+  // sure = false when nothing looks like an organisation; the app then says "I'm not sure who sent this".
+  const ORG_WORDS = ['co', 'co.', 'company', 'inc', 'llc', 'ltd', 'corp', 'bank', 'insurance', 'mutual', 'pharmacy', 'hospital', 'clinic', 'medical', 'health',
+    'county', 'city', 'state', 'department', 'dept', 'office', 'agency', 'administration', 'services', 'service', 'water', 'electric', 'energy', 'gas', 'power',
+    'utilities', 'credit', 'union', 'school', 'university', 'court', 'irs', 'social security', 'medicare', 'telecom', 'wireless', 'phone', 'internet',
+    'compañía', 'banco', 'seguro', 'seguros', 'farmacia', 'condado', 'departamento', 'oficina', 'servicios'];
+  const SENDER_SKIP = /^(dear|estimad|hello\b|hi\b|to:|re:|page \d|p[aá]gina|account|policy|customer|statement|notice date|date:|amount|total|sample|fecha|cuenta)/i;
+  function cleanSenderText(s) {
+    return s.replace(/^\s*(sample only|sample|ejemplo|muestra)\s*[-–—:]\s*/i, '').replace(/\s{2,}/g, ' ').trim();
+  }
+  function titleCase(s) {
+    if (s !== s.toUpperCase()) return s;
+    return s.toLowerCase().replace(/(^|[\s&\-\/(])([a-záéíóúñ])/g, (m, a, b) => a + b.toUpperCase()).replace(/\b(Irs|Ssa|Llc|Inc|Usa)\b/g, w => w.toUpperCase()).replace(/\b(Of|And|The|For|De|Del|La|Y)\b/g, (w, x, o) => o === 0 ? w : w.toLowerCase());
+  }
+  function findSender(lines, userName) {
+    const me = userName ? norm(userName) : '';
+    const top = [];
+    for (let i = 0; i < lines.length && top.length < 6; i++) {
+      const raw = (lines[i].text || '').trim(); if (!raw) continue;
+      top.push({ i, raw, clean: cleanSenderText(raw) });
+    }
+    const looksOk = c => c.clean.length > 3 && /[a-z]{3}/i.test(c.clean) && !SENDER_SKIP.test(c.clean) && !/\d{3}[-.\s]\d{4}/.test(c.clean) &&
+      !findDates(c.clean).length && !/^(page|p[aá]gina)/i.test(c.clean) && !(me && norm(c.clean) === me) && !/(final notice|urgent|important|aviso final|urgente)$/i.test(c.clean);
+    const isOrg = c => { const n = ' ' + norm(c.clean) + ' '; return ORG_WORDS.some(w => n.includes(' ' + w + ' ') || n.includes(' ' + w + '.')); };
+    const org = top.find(c => looksOk(c) && isOrg(c));
+    if (org) return { name: titleCase(org.clean), line: org.i, sure: true };
+    const first = top.find(looksOk);
+    if (first) return { name: titleCase(first.clean), line: first.i, sure: false };
+    return { name: '', line: top.length ? top[0].i : -1, sure: false };
+  }
+
   /**
    * extract(doc, opts)
    * doc: { text, lines:[{text, bbox, page, conf}], meanConf }
@@ -287,7 +320,9 @@
 
     // --- agency claimed & sender (SCM-07, SCM-09) ---
     const agency = AGENCIES.find(a => a.names.some(n => has(norm(lines.slice(0, 8).map(l => l.text).join(' ')), n) || has(t, n)));
-    const senderLine = lines.map(l => (l.text || '').trim()).find(s => s.length > 3 && /[a-z]/i.test(s)) || '';
+    const sender = findSender(lines, opts.userName);
+    const senderLine = sender.name;
+    if (sender.line >= 0) evidence.push({ kind: 'sender', line: sender.line, text: (lines[sender.line].text || '').trim(), bbox: lines[sender.line].bbox, page: lines[sender.line].page, label: sender.name });
 
     // --- scam signals (SCM-02..06, SCM-10..14) ---
     const signals = [];
@@ -348,13 +383,13 @@
     const fieldConf = {
       deadline: !firstDue ? 'none' : (deadlineState === 'unclear' ? 'cantTell' : 'clear'),
       amount: !amounts.length ? 'none' : (money === 'unclear' || contradictions.some(c => c.id === 'twoAmounts') ? 'review' : 'clear'),
-      sender: senderLine ? (doc.meanConf != null && doc.meanConf < 70 ? 'review' : 'clear') : 'cantTell',
+      sender: !senderLine ? 'cantTell' : (!sender.sure || (doc.meanConf != null && doc.meanConf < 70)) ? 'review' : 'clear',
       type: typeScores[0].score >= 2 ? 'clear' : typeScores[0].score === 1 ? 'review' : 'cantTell'
     };
 
     return {
       readable, text, lines, dates, deadline, deadlineState, daysLeft, letterDate,
-      amounts, money, mainAmount, noAction, signature, docType, typeScores, agency, senderLine,
+      amounts, money, mainAmount, noAction, signature, docType, typeScores, agency, senderLine, sender,
       signals, contradictions, links, phones, belongs, sensitive, pageInfo, fieldConf, evidence,
       meanConf: doc.meanConf
     };

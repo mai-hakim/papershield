@@ -1,0 +1,24 @@
+Results — an initial pilot on 5 documents
+
+This is an initial pilot, not proof. Small samples can change a lot with a few more documents. (TST-12)
+
+Missed scams (scams called safe) — headline	0 of 1	✓ meets target
+False alarms (real letters called scams) — headline	0 of 3	✓ meets target
+Correct result	5 of 5 (100%)	✓ meets target
+Amount read correctly	1 of 1	
+Deadline read correctly	2 of 2	
+Correctly said “I can’t read this”	1 of 1	✓ meets target
+Errors while reading	0	
+Every document
+File	Expected	Got	Rule	Amount (exp/got)	Deadline (exp/got)	Signals
+01_bill_good.jpg	action	✓ action	R7	✓ 62.40 / 62.40	✓ 2026-10-30 / 2026-10-30	
+02_scam_photo.jpg	scam	✓ scam	R1	✓ — / —	✓ — / —	payment ssn urgency caps
+03_two_amounts.jpg	help	✓ help (not sure)	R3	✕ — / 40.00	✓ 2026-11-03 / 2026-11-03	contradiction
+04_no_action_dark.jpg	none	✓ none	R10	✓ — / —	✓ — / —	
+05_unreadable_blur.jpg	cantRead	✓ cantRead	R0	✓ — / —	✓ — / —	
+Error gallery (TST-11)
+
+Every document the app got wrong. Use these slides to show where it struggled and what you changed.
+
+03_two_amounts.jpg: expected help, got help
+Download results (CSV)

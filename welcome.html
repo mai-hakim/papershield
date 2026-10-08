@@ -1,10 +1,10 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="description" content="PaperShield: photograph a letter, get one clear answer. It doesn't explain documents. It decides.">
-<link rel="stylesheet" href="css/app.css"><link rel="icon" href="assets/icon.svg"><title>PaperShield — A letter arrives. What happens next?</title></head>
-<body><main class="doc land">
+<meta name="theme-color" content="#0F6B6B"><link rel="stylesheet" href="css/app.css"><link rel="icon" href="assets/icon.svg"><title>PaperShield — A letter arrives. What happens next?</title></head>
+<body><main class="doc land" id="main">
 <section class="hero">
-  <div class="brand"><span class="shield-mark small" aria-hidden="true"></span><span>PaperShield</span></div>
+  <div class="brand"><span data-logo="4.2rem" data-animate></span><span>PaperShield</span></div>
   <h1>A letter arrives. What happens next?</h1>
   <p class="lead">It doesn't explain documents. It decides.</p>
   <p><a class="btn primary big" href="index.html">Open PaperShield</a></p>
@@ -38,4 +38,7 @@
 <section><p><a class="btn primary big" href="index.html">Open PaperShield</a></p>
   <p><a href="about.html">About</a> · <a href="privacy.html">Privacy</a> · <a href="accessibility.html">Accessibility</a></p>
   <p class="muted">PaperShield gives information, not financial or legal advice.</p></section>
-</main></body></html>
+</main>
+<div id="live" class="sr" role="status" aria-live="polite"></div><div id="toast" role="status" hidden></div>
+<script src="js/i18n.js"></script><script src="js/i18n-extra.js"></script><script src="js/core.js"></script><script src="js/ui.js"></script><script src="js/static.js"></script>
+</body></html>

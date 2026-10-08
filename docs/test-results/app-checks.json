@@ -1,0 +1,512 @@
+{
+  "startedAt": "2026-10-08T20:53:06.957Z",
+  "target": "local copy of PaperShield-stage1-WIP",
+  "checks": [
+    {
+      "name": "sample bill gives the same answer as before (action)",
+      "pass": true,
+      "detail": "action"
+    },
+    {
+      "name": "sample bill: answer word uses its own colour (not always green)",
+      "pass": true,
+      "detail": "rgb(154, 74, 0) vs rgb(154, 74, 0)"
+    },
+    {
+      "name": "sample bill: summary card + See the letter + slider + keep card",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample bill: no \"Show me what matters\" / \"Original words / Easy Read\"",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample bill: \"Who sent this?\" has no \"SAMPLE ONLY\"",
+      "pass": true,
+      "detail": "Valley Light & Water Co."
+    },
+    {
+      "name": "sample insurance gives the same answer as before (none)",
+      "pass": true,
+      "detail": "none"
+    },
+    {
+      "name": "sample insurance: answer word uses its own colour (not always green)",
+      "pass": true,
+      "detail": "rgb(28, 110, 64) vs rgb(28, 110, 64)"
+    },
+    {
+      "name": "sample insurance: summary card + See the letter + slider + keep card",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample insurance: no \"Show me what matters\" / \"Original words / Easy Read\"",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample insurance: \"Who sent this?\" has no \"SAMPLE ONLY\"",
+      "pass": true,
+      "detail": "Sunrise Mutual Insurance"
+    },
+    {
+      "name": "sample gov gives the same answer as before (help)",
+      "pass": true,
+      "detail": "help"
+    },
+    {
+      "name": "sample gov: answer word uses its own colour (not always green)",
+      "pass": true,
+      "detail": "rgb(106, 63, 160) vs rgb(106, 63, 160)"
+    },
+    {
+      "name": "sample gov: summary card + See the letter + slider + keep card",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample gov: no \"Show me what matters\" / \"Original words / Easy Read\"",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample gov: \"Who sent this?\" has no \"SAMPLE ONLY\"",
+      "pass": true,
+      "detail": "County of Example"
+    },
+    {
+      "name": "sample scam gives the same answer as before (scam)",
+      "pass": true,
+      "detail": "scam"
+    },
+    {
+      "name": "sample scam: answer word uses its own colour (not always green)",
+      "pass": true,
+      "detail": "rgb(180, 35, 24) vs rgb(180, 35, 24)"
+    },
+    {
+      "name": "sample scam: summary card + See the letter + slider + keep card",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample scam: no \"Show me what matters\" / \"Original words / Easy Read\"",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample scam: \"Who sent this?\" has no \"SAMPLE ONLY\"",
+      "pass": true,
+      "detail": "It says it is from: Tax Resolution Department IRS Services. That may not be true."
+    },
+    {
+      "name": "sample refund gives the same answer as before (none)",
+      "pass": true,
+      "detail": "none"
+    },
+    {
+      "name": "sample refund: answer word uses its own colour (not always green)",
+      "pass": true,
+      "detail": "rgb(28, 110, 64) vs rgb(28, 110, 64)"
+    },
+    {
+      "name": "sample refund: summary card + See the letter + slider + keep card",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample refund: no \"Show me what matters\" / \"Original words / Easy Read\"",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sample refund: \"Who sent this?\" has no \"SAMPLE ONLY\"",
+      "pass": true,
+      "detail": "Citywide Pharmacy"
+    },
+    {
+      "name": "red scam lamp pulses slowly 3 times then stays (2 s each)",
+      "pass": true,
+      "detail": "lampPulse x3 2s"
+    },
+    {
+      "name": "purple result shows \"Send to someone I trust\" button",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "bug 3: result header title is centred (normal text)",
+      "pass": true,
+      "detail": "off by 0px"
+    },
+    {
+      "name": "See the letter shows the photo and the magnifier works on it",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "\"I don't understand\" gives 4 different methods",
+      "pass": true,
+      "detail": "1Simpler words | 2Read slowly | 3The line on the letter | 4Ask someone you trust"
+    },
+    {
+      "name": "level 3 shows the line on the letter; level 4 has a send button",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "send to someone: message preview shown first, with SMS and WhatsApp",
+      "pass": true,
+      "detail": "{\"preview\":357,\"sms\":true,\"wa\":true}"
+    },
+    {
+      "name": "mute icon stops automatic speaking",
+      "pass": true,
+      "detail": "[\"true\",false]"
+    },
+    {
+      "name": "speed slider: 5 steps, default slower than the old 0.75",
+      "pass": true,
+      "detail": "{\"min\":\"0\",\"max\":\"4\",\"value\":\"1\",\"rate\":0.62}"
+    },
+    {
+      "name": "Save on my phone only shows \"Saved on your phone only. Never sent to anyone.\"",
+      "pass": true,
+      "detail": "🔒 Saved on your phone only. Never sent to anyone."
+    },
+    {
+      "name": "saved letter appears on the home screen",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "bug 2: no sideways scroll on home at biggest text",
+      "pass": true,
+      "detail": "scrollWidth 390 / 390"
+    },
+    {
+      "name": "bug 2: no sideways scroll on scam result at biggest text",
+      "pass": true,
+      "detail": "scrollWidth 390 / 390"
+    },
+    {
+      "name": "bug 3: result header title centred at biggest text",
+      "pass": true,
+      "detail": "off by 0px"
+    },
+    {
+      "name": "bug 4: camera bar fixed and on screen (normal)",
+      "pass": true,
+      "detail": "{\"position\":\"fixed\",\"top\":591,\"bottom\":844,\"inView\":true}"
+    },
+    {
+      "name": "bug 4: Listen button on screen (normal)",
+      "pass": true,
+      "detail": "{\"top\":517,\"bottom\":577,\"inView\":true}"
+    },
+    {
+      "name": "bug 4: camera bar fixed and on screen (invert)",
+      "pass": true,
+      "detail": "{\"position\":\"fixed\",\"top\":591,\"bottom\":844,\"inView\":true}"
+    },
+    {
+      "name": "bug 4: Listen button on screen (invert)",
+      "pass": true,
+      "detail": "{\"top\":517,\"bottom\":577,\"inView\":true}"
+    },
+    {
+      "name": "bug 4: camera bar fixed and on screen (dim)",
+      "pass": true,
+      "detail": "{\"position\":\"fixed\",\"top\":591,\"bottom\":844,\"inView\":true}"
+    },
+    {
+      "name": "bug 4: Listen button on screen (dim)",
+      "pass": true,
+      "detail": "{\"top\":517,\"bottom\":577,\"inView\":true}"
+    },
+    {
+      "name": "reduce motion: no pulse and no rise animation",
+      "pass": true,
+      "detail": "{\"lamp\":\"none\",\"outcome\":\"none\"}"
+    },
+    {
+      "name": "welcome.html: logo, background art, tools, no placeholders, no sideways scroll",
+      "pass": true,
+      "detail": "{\"logo\":true,\"tools\":true,\"bg\":true,\"placeholder\":false,\"overflowX\":false}"
+    },
+    {
+      "name": "about.html: logo, background art, tools, no placeholders, no sideways scroll",
+      "pass": true,
+      "detail": "{\"logo\":true,\"tools\":true,\"bg\":true,\"placeholder\":false,\"overflowX\":false}"
+    },
+    {
+      "name": "privacy.html: logo, background art, tools, no placeholders, no sideways scroll",
+      "pass": true,
+      "detail": "{\"logo\":true,\"tools\":true,\"bg\":true,\"placeholder\":false,\"overflowX\":false}"
+    },
+    {
+      "name": "accessibility.html: logo, background art, tools, no placeholders, no sideways scroll",
+      "pass": true,
+      "detail": "{\"logo\":true,\"tools\":true,\"bg\":true,\"placeholder\":false,\"overflowX\":false}"
+    },
+    {
+      "name": "test.html: logo, background art, tools, no placeholders, no sideways scroll",
+      "pass": true,
+      "detail": "{\"logo\":true,\"tools\":true,\"bg\":true,\"placeholder\":false,\"overflowX\":false}"
+    },
+    {
+      "name": "offline: app opens with no internet",
+      "pass": true,
+      "detail": "36 files cached"
+    },
+    {
+      "name": "offline: 4 info pages open with no internet",
+      "pass": true,
+      "detail": "4 of 4"
+    },
+    {
+      "name": "contrast (axe color-contrast): 0 problems on every page checked",
+      "pass": true,
+      "detail": "all 0"
+    },
+    {
+      "name": "axe WCAG A/AA: no violations",
+      "pass": true,
+      "detail": "none"
+    },
+    {
+      "name": "no console errors",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "samples": {
+    "light:bill": {
+      "outcome": "action",
+      "cls": "outcome o-action",
+      "word": "!Action needed",
+      "wordColor": "rgb(154, 74, 0)",
+      "borderColor": "rgb(154, 74, 0)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "Valley Light & Water Co.",
+      "lampPulse": "none x1 0s"
+    },
+    "light:insurance": {
+      "outcome": "none",
+      "cls": "outcome o-none",
+      "word": "✓No action needed",
+      "wordColor": "rgb(28, 110, 64)",
+      "borderColor": "rgb(28, 110, 64)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "Sunrise Mutual Insurance",
+      "lampPulse": "none x1 0s"
+    },
+    "light:gov": {
+      "outcome": "help",
+      "cls": "outcome o-help",
+      "word": "?Ask someone you trust",
+      "wordColor": "rgb(106, 63, 160)",
+      "borderColor": "rgb(106, 63, 160)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": true,
+      "sender": "County of Example",
+      "lampPulse": "none x1 0s"
+    },
+    "light:scam": {
+      "outcome": "scam",
+      "cls": "outcome o-scam",
+      "word": "⚠Careful — signs of a scam",
+      "wordColor": "rgb(180, 35, 24)",
+      "borderColor": "rgb(180, 35, 24)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "It says it is from: Tax Resolution Department IRS Services. That may not be true.",
+      "lampPulse": "lampPulse x3 2s"
+    },
+    "light:refund": {
+      "outcome": "none",
+      "cls": "outcome o-none",
+      "word": "✓No action needed",
+      "wordColor": "rgb(28, 110, 64)",
+      "borderColor": "rgb(28, 110, 64)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "Citywide Pharmacy",
+      "lampPulse": "none x1 0s"
+    },
+    "dark:bill": {
+      "outcome": "action",
+      "cls": "outcome o-action",
+      "word": "!Action needed",
+      "wordColor": "rgb(242, 168, 90)",
+      "borderColor": "rgb(242, 168, 90)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "Valley Light & Water Co.",
+      "lampPulse": "none x1 0s"
+    },
+    "dark:insurance": {
+      "outcome": "none",
+      "cls": "outcome o-none",
+      "word": "✓No action needed",
+      "wordColor": "rgb(111, 214, 156)",
+      "borderColor": "rgb(111, 214, 156)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "Sunrise Mutual Insurance",
+      "lampPulse": "none x1 0s"
+    },
+    "dark:gov": {
+      "outcome": "help",
+      "cls": "outcome o-help",
+      "word": "?Ask someone you trust",
+      "wordColor": "rgb(201, 168, 255)",
+      "borderColor": "rgb(201, 168, 255)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": true,
+      "sender": "County of Example",
+      "lampPulse": "none x1 0s"
+    },
+    "dark:scam": {
+      "outcome": "scam",
+      "cls": "outcome o-scam",
+      "word": "⚠Careful — signs of a scam",
+      "wordColor": "rgb(255, 138, 127)",
+      "borderColor": "rgb(255, 138, 127)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "It says it is from: Tax Resolution Department IRS Services. That may not be true.",
+      "lampPulse": "lampPulse x3 2s"
+    },
+    "dark:refund": {
+      "outcome": "none",
+      "cls": "outcome o-none",
+      "word": "✓No action needed",
+      "wordColor": "rgb(111, 214, 156)",
+      "borderColor": "rgb(111, 214, 156)",
+      "summary": true,
+      "seeLetter": true,
+      "showMatters": false,
+      "easyRead": false,
+      "slower": false,
+      "slider": true,
+      "keep": true,
+      "helpSend": false,
+      "sender": "Citywide Pharmacy",
+      "lampPulse": "none x1 0s"
+    }
+  },
+  "axe": {
+    "home-light": [],
+    "result-bill-light": [],
+    "result-gov-light": [],
+    "result-scam-light": [],
+    "home-dark": [],
+    "result-bill-dark": [],
+    "result-gov-dark": [],
+    "result-scam-dark": [],
+    "page-welcome": [],
+    "page-about": [],
+    "page-privacy": [],
+    "page-accessibility": [],
+    "page-test": []
+  },
+  "consoleErrors": [],
+  "screenshots": [
+    "light-onboard-1.png",
+    "light-onboard-2.png",
+    "light-onboard-3.png",
+    "light-home.png",
+    "light-result-bill.png",
+    "light-result-insurance.png",
+    "light-result-gov.png",
+    "light-result-scam.png",
+    "light-result-refund.png",
+    "dark-onboard-1.png",
+    "dark-onboard-2.png",
+    "dark-onboard-3.png",
+    "dark-home.png",
+    "dark-result-bill.png",
+    "dark-result-insurance.png",
+    "dark-result-gov.png",
+    "dark-result-scam.png",
+    "dark-result-refund.png",
+    "flow-see-letter-magnifier.png",
+    "flow-understand-level4.png",
+    "flow-share-preview.png",
+    "flow-home-saved.png",
+    "flow-saved-open.png",
+    "big-text-home.png",
+    "big-text-result-scam.png",
+    "bug4-dock-normal.png",
+    "bug4-dock-invert.png",
+    "bug4-dock-dim.png",
+    "page-welcome.png",
+    "page-about.png",
+    "page-privacy.png",
+    "page-accessibility.png",
+    "page-test.png"
+  ],
+  "finishedAt": "2026-10-08T20:54:13.569Z",
+  "passed": 56,
+  "failed": 0
+}
