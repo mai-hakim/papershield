@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self'; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<link rel="stylesheet" href="css/app.css"><title>PaperShield — Pilot test</title></head>
+<body><main class="doc" id="main">
+<a class="back-link" href="index.html">‹ Back to PaperShield</a>
+<h1>Pilot test</h1>
+<p>For the team. Runs every test document through the same reader and rules as the app, on this device, and scores it against targets set <em>before</em> testing (TST-03).</p>
+<h2>1. Answer sheet (CSV)</h2>
+<p>One row per document. Columns: <code>file,outcome,amount,deadline,unreadable</code>. Outcome is one of <code>none, action, help, scam</code>. Amount like <code>45.50</code> or empty. Deadline as <code>2026-10-14</code> or empty. Unreadable is <code>yes</code> if a person cannot read it either.</p>
+<label class="field">Answer sheet <input type="file" id="csv" accept=".csv,text/csv"></label>
+<button class="btn small" id="template">Download a blank answer sheet</button>
+<h2>2. Test documents</h2>
+<label class="field">Photos or PDFs <input type="file" id="docs" accept="image/*,application/pdf" multiple></label>
+<label class="field">Test date (deadlines are counted from this day) <input type="text" id="today" placeholder="2026-10-06"></label>
+<button class="btn primary big" id="run">Run the test</button>
+<p id="status" role="status"></p>
+<section id="out"></section>
+</main>
+<script src="vendor/tesseract/tesseract.min.js"></script><script src="vendor/pdfjs/pdf.min.js"></script><script src="vendor/jsqr/jsQR.js"></script>
+<script src="js/i18n.js"></script><script src="js/rules.js"></script><script src="js/explain.js"></script><script src="js/core.js"></script><script src="js/engine.js"></script><script src="js/tests.js"></script>
+</body></html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Security: only this site's own files may load or run. No trackers, no outside servers. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self'; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="PaperShield reads a letter on your phone and tells you what to do with it.">
+<meta name="theme-color" content="#123b7a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+<title>PaperShield</title>
+</head>
+<body data-profile="standard" data-theme="system">
+<a class="sr" href="#main">Skip to content</a>
+<main id="main" aria-live="off"></main>
+<div id="live" class="sr" role="status" aria-live="polite"></div>
+<div id="toast" role="status" hidden></div>
+<div id="print" aria-hidden="true"></div>
+<noscript><p>PaperShield needs JavaScript to work.</p></noscript>
+<script src="vendor/tesseract/tesseract.min.js"></script>
+<script src="vendor/pdfjs/pdf.min.js"></script>
+<script src="vendor/jsqr/jsQR.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/rules.js"></script>
+<script src="js/explain.js"></script>
+<script src="js/demo.js"></script>
+<script src="js/core.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

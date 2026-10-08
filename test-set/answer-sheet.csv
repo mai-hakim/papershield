@@ -1,0 +1,6 @@
+file,outcome,amount,deadline,unreadable
+01_bill_good.jpg,action,62.40,2026-10-30,no
+02_scam_photo.jpg,scam,,,no
+03_two_amounts.jpg,help,,2026-11-03,no
+04_no_action_dark.jpg,none,,,no
+05_unreadable_blur.jpg,none,,,yes

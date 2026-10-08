@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 520" font-family="Verdana, sans-serif" font-size="17">
+  <title>How PaperShield decides</title>
+  <desc>Photo, then text reader on the phone, then facts, then fixed rule check, then scam signs, then one result, then evidence. Everything stays on the phone.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#123b7a"/></marker></defs>
+  <rect x="10" y="10" width="660" height="500" rx="18" fill="none" stroke="#123b7a" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="30" y="42" fill="#123b7a" font-weight="bold">Everything inside this line happens on your phone</text>
+  <g fill="#fff" stroke="#123b7a" stroke-width="3">
+    <rect x="40" y="70" width="270" height="62" rx="12"/><rect x="370" y="70" width="270" height="62" rx="12"/>
+    <rect x="370" y="190" width="270" height="62" rx="12"/><rect x="40" y="190" width="270" height="62" rx="12"/>
+    <rect x="40" y="310" width="270" height="62" rx="12"/><rect x="370" y="310" width="270" height="62" rx="12" stroke="#b42318"/>
+    <rect x="200" y="420" width="280" height="62" rx="12"/>
+  </g>
+  <g fill="#17202a" text-anchor="middle">
+    <text x="175" y="98" font-weight="bold">1. Photo or PDF</text><text x="175" y="120" font-size="14">crop, straighten, clean</text>
+    <text x="505" y="98" font-weight="bold">2. Text reader (OCR)</text><text x="505" y="120" font-size="14">extracts words only</text>
+    <text x="505" y="218" font-weight="bold">3. Facts</text><text x="505" y="240" font-size="14">dates, amounts, signature, sender</text>
+    <text x="175" y="218" font-weight="bold">4. Scam signs first</text><text x="175" y="240" font-size="14">payment, SSN, pressure, links</text>
+    <text x="175" y="338" font-weight="bold">5. Fixed rule table</text><text x="175" y="360" font-size="14">R0–R10, checked in order</text>
+    <text x="505" y="338" font-weight="bold" fill="#b42318">6. One of four results</text><text x="505" y="360" font-size="14">no action · action · help · scam</text>
+    <text x="340" y="448" font-weight="bold">7. Evidence</text><text x="340" y="470" font-size="14">the line it came from, highlighted</text>
+  </g>
+  <g stroke="#123b7a" stroke-width="3" fill="none" marker-end="url(#a)">
+    <path d="M310 101 H364"/><path d="M505 132 V184"/><path d="M370 221 H316"/><path d="M175 252 V304"/><path d="M310 341 H364"/><path d="M505 372 V400 H420 V414"/>
+  </g>
+</svg>
