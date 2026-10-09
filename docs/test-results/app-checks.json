@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-09T01:36:43.341Z",
+  "startedAt": "2026-10-09T02:12:28.406Z",
   "target": "local copy of PaperShield-stage1-WIP",
   "checks": [
     {
@@ -146,6 +146,11 @@
       "name": "bug 3: result header title is centred (normal text)",
       "pass": true,
       "detail": "off by 0px"
+    },
+    {
+      "name": "\"Read aloud\" gives visible feedback (Stop, or \"cannot read aloud\" message)",
+      "pass": true,
+      "detail": "{\"pressed\":\"true\",\"toast\":\"\"}"
     },
     {
       "name": "See the letter shows the photo and the magnifier works on it",
@@ -511,7 +516,7 @@
     "page-accessibility.png",
     "page-test.png"
   ],
-  "finishedAt": "2026-10-09T01:38:02.961Z",
-  "passed": 57,
+  "finishedAt": "2026-10-09T02:13:42.710Z",
+  "passed": 58,
   "failed": 0
 }

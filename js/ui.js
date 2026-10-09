@@ -194,9 +194,18 @@
 
   // A small "read this part aloud" button for any card.
   function sayBtn(getParts, label) {
-    const h = C().h;
-    return h('button', { class: 'say', type: 'button', onclick: () => C().speak([].concat(typeof getParts === 'function' ? getParts() : getParts)) },
-      h('span', { 'aria-hidden': 'true' }, '🔊 '), label || t('say'));
+    const h = C().h; const text = label || t('say');
+    // visible feedback: "Stop" while reading; a message if this phone cannot read aloud
+    const btn = h('button', { class: 'say', type: 'button', 'aria-pressed': 'false', onclick: () => {
+      const synth = root.speechSynthesis;
+      if (btn.getAttribute('aria-pressed') === 'true') { C().stop(); paint(false); return; }
+      const ok = C().speak([].concat(typeof getParts === 'function' ? getParts() : getParts));
+      if (!ok) { C().toast(t('noVoice')); return; }
+      paint(true);
+      const poll = setInterval(() => { if (!synth || (!synth.speaking && !synth.pending)) { clearInterval(poll); paint(false); } }, 500);
+    } }, h('span', { 'aria-hidden': 'true', class: 'say-ic' }, '🔊 '), h('span', { class: 'say-label' }, text));
+    function paint(on) { btn.setAttribute('aria-pressed', String(on)); btn.querySelector('.say-ic').textContent = on ? '⏹ ' : '🔊 '; btn.querySelector('.say-label').textContent = on ? t('stopListen') : text; }
+    return btn;
   }
 
   // Reading speed: a slider from turtle to rabbit, 5 steps. Moving it plays a short sample.

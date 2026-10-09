@@ -59,6 +59,7 @@
   let rateOnce = null;
   function speak(parts, opts) {
     if (!synth) return false; opts = opts || {};
+    if (!opts.auto && synth.getVoices && synth.getVoices().length === 0 && speak.noVoices) return false; // known: this device has no voice
     if (opts.auto && state.settings.muted) return false;
     rateOnce = opts.rate || null;
     stop(); queue = [].concat(parts).filter(Boolean); idx = 0; chunkMode = !!opts.chunks; onAsk = opts.onAsk || null; toneNow = opts.tone || 'calm';
@@ -77,6 +78,7 @@
   }
   function pause() { if (synth && synth.speaking) { synth.pause(); paused = true; } }
   function resume() { if (synth && paused) { synth.resume(); paused = false; } }
+  if (synth && synth.getVoices) { const chk = () => { speak.noVoices = synth.getVoices().length === 0; }; chk(); if ('onvoiceschanged' in synth) synth.addEventListener('voiceschanged', chk); setTimeout(chk, 1500); }
   function stop() { if (synth) synth.cancel(); queue = []; paused = false; }
   function isPaused() { return paused; }
 

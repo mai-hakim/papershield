@@ -450,3 +450,4 @@ body.has-tools.one-hand main { padding-bottom: calc(11em + 6rem); }
    (Found by an AI test agent and confirmed by a fixed tap-size check: before this it stayed 1x1 px even when focused.) */
 a.sr:focus, a.sr:focus-visible { position: fixed; z-index: 60; top: 8px; left: 8px; width: auto; height: auto; clip: auto; white-space: normal; overflow: visible;
   padding: 0.7rem 1.1rem; min-height: 48px; background: var(--brand); color: var(--brand-ink); border-radius: 12px; font-weight: 700; text-decoration: none; }
+.say[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
