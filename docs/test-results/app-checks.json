@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-09T02:12:28.406Z",
+  "startedAt": "2026-10-09T03:17:38.999Z",
   "target": "local copy of PaperShield-stage1-WIP",
   "checks": [
     {
@@ -206,6 +206,11 @@
       "name": "bug 3: result header title centred at biggest text",
       "pass": true,
       "detail": "off by 0px"
+    },
+    {
+      "name": "\"Scan a document\" opens the camera screen with no crash",
+      "pass": true,
+      "detail": "page errors after tap: 0"
     },
     {
       "name": "bug 4: camera bar fixed and on screen (normal)",
@@ -516,7 +521,7 @@
     "page-accessibility.png",
     "page-test.png"
   ],
-  "finishedAt": "2026-10-09T02:13:42.710Z",
-  "passed": 58,
+  "finishedAt": "2026-10-09T03:19:05.428Z",
+  "passed": 59,
   "failed": 0
 }

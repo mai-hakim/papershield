@@ -73,11 +73,15 @@ PaperShield never pays, signs, calls or replies. It only advises. Sending to a t
 Photos exist only in memory while the result is open. They are wiped when it closes, unless the person presses **Save on my phone only** (stored in this browser's IndexedDB on that phone; each saved letter can be deleted). No analytics, cookies or tracking. A strict Content Security Policy blocks every outside script and connection. See [privacy.html](privacy.html).
 
 ## Test cases and results (real runs, October 8, 2026)
-Automated checks in Chromium at phone size 390×844, light and dark mode, using Playwright + axe-core: **58 passed, 0 failed.** The details are in [docs/test-results/app-checks.json](docs/test-results/app-checks.json). They include:
+Automated checks in Chromium at phone size 390×844, light and dark mode, using Playwright + axe-core: **59 passed, 0 failed.** The details are in [docs/test-results/app-checks.json](docs/test-results/app-checks.json). They include:
 - The 5 sample letters give the same answers as before the redesign: bill = Action needed, insurance = No action, benefits form = Ask someone, scam = Scam, refund = No action.
 - The 4 stage-1 bugs are fixed and re-tested: (1) the answer word has its own colour, not always green; (2) no sideways scroll at the biggest text; (3) the header title is centred (0 px off); (4) the bottom camera bar and the Listen button stay on screen, also with the invert and dim filters.
 - axe-core WCAG 2 A/AA: 0 violations, including 0 colour-contrast problems, on 13 page states (home and 3 results in light and dark, plus 5 info pages).
-- Two fixes came from the AI test agents in Project A: the "Skip to content" link is now visible when it gets keyboard focus (before, it stayed 1×1 px), and every 🔊 "Read aloud" button now shows "Stop" while reading, or a message if the phone cannot read aloud (before, a tap could show no change at all).
+- **Four fixes came from the AI test agents in Project A** (each confirmed by a fixed check before I fixed it):
+  1. **A crash**: tapping the big "Scan a document" button crashed the camera screen ("pages.map is not a function"). This bug was already in the original app.
+  2. The sample-letter buttons were too close together for a shaky tap. They now have more space and are taller.
+  3. The "Skip to content" link stayed 1×1 px even with keyboard focus. Now it is visible.
+  4. The 🔊 "Read aloud" buttons gave no visible feedback. Now they show "Stop" while reading, or a message if the phone cannot read aloud.
 - Reduce motion: no pulse and no rise animation. Offline: the app and 4 info pages open with no internet (36 files cached). No console errors.
 
 On-device text reader on the 5 synthetic test photos in `test-set/` (run through `test.html`): **5 of 5 correct answers**, 0 missed scams, 0 false alarms, the blurry photo correctly answered "I can't read this". One field mismatch: on `03_two_amounts.jpg` the answer sheet expects no single amount, but the app read $40.00 (it still answered "Ask someone" with "not sure"). See [docs/test-results/pilot-results.txt](docs/test-results/pilot-results.txt).

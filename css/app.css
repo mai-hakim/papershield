@@ -451,3 +451,8 @@ body.has-tools.one-hand main { padding-bottom: calc(11em + 6rem); }
 a.sr:focus, a.sr:focus-visible { position: fixed; z-index: 60; top: 8px; left: 8px; width: auto; height: auto; clip: auto; white-space: normal; overflow: visible;
   padding: 0.7rem 1.1rem; min-height: 48px; background: var(--brand); color: var(--brand-ink); border-radius: 12px; font-weight: 700; text-decoration: none; }
 .say[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
+
+/* More space between sample-letter buttons, so a shaky tap does not land on the wrong one
+   (found by the AI "hand tremor" test agent and confirmed by a fixed tap check). */
+.demo-row .chips { gap: 0.9rem; }
+.demo-row .chip { min-height: 56px; padding: 0.4rem 1.1rem; }

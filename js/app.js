@@ -126,7 +126,7 @@
         h('nav', { class: 'links' }, [['help', howItDecides], ['glossary', glossaryScreen], ['privacy', privacyScreen], ['accessibility', a11yScreen], ['about', aboutScreen]]
           .map(([k, fn]) => h('button', { class: 'link', onclick: fn }, t(k)))),
         h('div', { class: 'dock' },
-          h('button', { class: 'camera-btn', onclick: camera, 'aria-describedby': 'cam-sub' },
+          h('button', { class: 'camera-btn', onclick: () => camera(), 'aria-describedby': 'cam-sub' },
             h('span', { class: 'cam-lens', 'aria-hidden': 'true' }), h('span', { class: 'cam-label' }, t('scan')), h('span', { id: 'cam-sub', class: 'cam-sub' }, t('scanSub'))),
           h('div', { class: 'dock-row' },
             h('label', { class: 'btn ghost file' }, '⬆ ' + t('upload'), h('input', { type: 'file', accept: 'image/*,application/pdf', multiple: true, class: 'sr', onchange: e => fromFiles([...e.target.files]) }))))
@@ -197,7 +197,7 @@
   let stream = null;
   function stopStream() { if (stream) { stream.getTracks().forEach(tr => tr.stop()); stream = null; } }
   async function camera(existing) {
-    const pages = existing || []; const hashes = pages.map(p => G.ahash(p));
+    const pages = Array.isArray(existing) ? existing : []; const hashes = pages.map(p => G.ahash(p)); // a tap event is not a list of pages
     go(root => {
       const video = h('video', { playsinline: true, muted: true, autoplay: true, class: 'cam-video', 'aria-hidden': 'true' });
       const hint = h('p', { class: 'cam-hint', role: 'status', 'aria-live': 'polite' }, t('camHint'));
