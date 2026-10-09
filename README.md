@@ -4,7 +4,7 @@
 Everything runs on the phone. No account, no upload, no AI deciding.
 
 **Live app:** https://mai-hakim.github.io/papershield/ · **Landing page:** https://mai-hakim.github.io/papershield/welcome.html
-**Demo video (84 s, all letters are fictional samples):** [docs/demo/papershield-demo.webm](docs/demo/papershield-demo.webm)
+**Demo video (85 s, all letters are fictional samples):** [docs/demo/papershield-demo.webm](docs/demo/papershield-demo.webm)
 
 | Scam caught | Letter summary | Ask someone you trust | Dark mode |
 |---|---|---|---|
@@ -82,7 +82,7 @@ Automated checks in Chromium at phone size 390×844, light and dark mode, using 
   2. The sample-letter buttons were too close together for a shaky tap. They now have more space and are taller.
   3. The "Skip to content" link stayed 1×1 px even with keyboard focus. Now it is visible.
   4. The 🔊 "Read aloud" buttons gave no visible feedback. Now they show "Stop" while reading, or a message if the phone cannot read aloud.
-- Reduce motion: no pulse and no rise animation. Offline: the app and 4 info pages open with no internet (36 files cached). No console errors.
+- Reduce motion: no pulse and no rise animation. Offline: the app and 4 info pages open with no internet (37 files cached). The same 59 checks also passed on the live site (https://mai-hakim.github.io/papershield/). No console errors.
 
 On-device text reader on the 5 synthetic test photos in `test-set/` (run through `test.html`): **5 of 5 correct answers**, 0 missed scams, 0 false alarms, the blurry photo correctly answered "I can't read this". One field mismatch: on `03_two_amounts.jpg` the answer sheet expects no single amount, but the app read $40.00 (it still answered "Ask someone" with "not sure"). See [docs/test-results/pilot-results.txt](docs/test-results/pilot-results.txt).
 
