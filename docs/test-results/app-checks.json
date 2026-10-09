@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-08T20:53:06.957Z",
+  "startedAt": "2026-10-09T01:36:43.341Z",
   "target": "local copy of PaperShield-stage1-WIP",
   "checks": [
     {
@@ -138,6 +138,11 @@
       "detail": ""
     },
     {
+      "name": "\"Skip to content\" link is visible when it has keyboard focus (at least 44 px tall)",
+      "pass": true,
+      "detail": "{\"focused\":true,\"w\":186,\"h\":58}"
+    },
+    {
       "name": "bug 3: result header title is centred (normal text)",
       "pass": true,
       "detail": "off by 0px"
@@ -260,7 +265,7 @@
     {
       "name": "offline: app opens with no internet",
       "pass": true,
-      "detail": "36 files cached"
+      "detail": "37 files cached"
     },
     {
       "name": "offline: 4 info pages open with no internet",
@@ -506,7 +511,7 @@
     "page-accessibility.png",
     "page-test.png"
   ],
-  "finishedAt": "2026-10-08T20:54:13.569Z",
-  "passed": 56,
+  "finishedAt": "2026-10-09T01:38:02.961Z",
+  "passed": 57,
   "failed": 0
 }
