@@ -4,7 +4,7 @@
 Everything runs on the phone. No account, no upload, no AI deciding.
 
 **Live app:** https://mai-hakim.github.io/papershield/ · **Landing page:** https://mai-hakim.github.io/papershield/welcome.html
-**Demo video (85 s, all letters are fictional samples):** [docs/demo/papershield-demo.webm](docs/demo/papershield-demo.webm)
+**Demo video (56 s, MP4; all letters are fictional samples):** [docs/demo/papershield-demo.mp4](docs/demo/papershield-demo.mp4). Recorded with Playwright, then converted to H.264 MP4 at 1.5× speed with ffmpeg so it plays on iPhone, Android and every desktop browser.
 
 | Scam caught | Letter summary | Ask someone you trust | Dark mode |
 |---|---|---|---|
